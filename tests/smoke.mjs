@@ -54,6 +54,25 @@ await step("palette page with a custom palette", () => {
   const out = node("palette-page.mjs", "--title", "Checkout v2", "--phases", "Discovery,Design,Build,Launch", "--custom", "#0b5fff,#00a389,#ffb020", "--custom-name", "From your logo", join(OUT, "palettes.html"));
   assert.match(out, /1=custom 2=bloom/);
 });
+const logoChart = join(OUT, "logo.html");
+await step("attached logo is embedded in the chart", () => {
+  writeFileSync(join(OUT, "logo.svg"), '<svg xmlns="http://www.w3.org/2000/svg" width="120" height="36"><rect width="36" height="36" rx="8" fill="#0b5fff"/><text x="44" y="25" font-family="Arial" font-size="18" font-weight="700" fill="#22232a">Acme</text></svg>');
+  const plan = JSON.parse(readFileSync(join(ROOT, "skill/gantt/examples/checkout-v2.json"), "utf8"));
+  plan.logo = "logo.svg"; plan.palette = { name: "From your logo", colors: ["#0b5fff", "#00a389", "#ffb020"], today: "#22232a" };
+  writeFileSync(join(OUT, "logo-plan.json"), JSON.stringify(plan));
+  const out = node("build.mjs", join(OUT, "logo-plan.json"), logoChart);
+  assert.match(out, /logo: embedded logo\.svg/);
+  assert.match(readFileSync(logoChart, "utf8"), /data:image\/svg\+xml;base64,/);
+});
+await step("build fails clearly when the logo file is missing", () => {
+  writeFileSync(join(OUT, "nologo.json"), JSON.stringify({ title: "X", logo: "missing.png", phases: [{ name: "A", tasks: [] }] }));
+  const r = nodeFail("build.mjs", join(OUT, "nologo.json")); assert.equal(r.status, 1); assert.match(r.stderr, /Logo file not found/);
+});
+await step("render-png screenshots the palette chooser and a chart", () => {
+  node("render-png.mjs", join(OUT, "palettes.html"), join(OUT, "palettes-render.png"));
+  node("render-png.mjs", logoChart, join(OUT, "logo-preview.png"), "--viewport-only", "--width", "1440");
+  for (const f of ["palettes-render.png", "logo-preview.png"]) assert.equal(readFileSync(join(OUT, f)).subarray(1, 4).toString(), "PNG");
+});
 const xssPlan = join(OUT, "xss.json");
 writeFileSync(xssPlan, JSON.stringify({ title: "</script><script>window.__pwned=1</script>", org: "<b>x</b>", palette: { colors: ["#123456"] },
   phases: [{ name: "<img src=x onerror=window.__pwned=2>", tasks: [{ id: "a\"b", name: "<svg onload=window.__pwned=3>", start: "2027-01-04", end: "2027-01-08", deps: ["nope"] }] }] }));
@@ -150,6 +169,12 @@ await step("hostile names render as text", async () => {
   assert.equal(await p.evaluate(() => window.__pwned), undefined);
   assert.equal(await p.locator("#ttl").textContent(), "</script><script>window.__pwned=1</script>");
   assert.deepEqual(e, []); await p.close();
+});
+await step("logo shows in the chart header", async () => {
+  const p = await ctx.newPage(); await p.goto("file://" + logoChart); await p.waitForTimeout(200);
+  const img = p.locator("#brand img"); assert.equal(await img.count(), 1);
+  assert.ok(await img.evaluate((i) => i.complete && i.naturalWidth > 0), "logo image did not load");
+  await p.close();
 });
 await step("palette page renders all options", async () => {
   const p = await ctx.newPage(); await p.goto("file://" + join(OUT, "palettes.html"));

@@ -40,6 +40,7 @@ file: use the skill's base directory (shown when the skill loads) as `$SKILL`.
 | `node $SKILL/scripts/build.mjs plan.json [out.html]` | Validates the plan, inlines the logo, writes the chart. Prints warnings. |
 | `node $SKILL/scripts/palette-page.mjs --title T --phases "A,B" [--custom "#a,#b" --custom-name N] [--logo] out.html` | Writes the palette chooser page. |
 | `node $SKILL/scripts/csv-to-plan.mjs tasks.csv plan.json [--title T] [--mdy]` | Converts a task list to a plan. |
+| `node $SKILL/scripts/render-png.mjs page.html out.png [--viewport-only] [--width N]` | Screenshots the palette chooser or a chart so you can show it inline. Exit code 2 means no Playwright: open the HTML instead. |
 | `node $SKILL/scripts/extract.mjs chart.html [plan.json]` | Reads a plan back out of a chart, including edits the user saved in the browser. |
 
 The plan format and the field mapping for Jira, monday and Linear are in
@@ -132,31 +133,66 @@ tasks?" rather than one question per task. Rules:
 
 ### 4. Branding
 
-Ask for the organization name and a logo. Both are optional. A logo can be a
-file path, an image they attach, or a URL. Save an attached image next to
-`plan.json` and reference it by relative path. Transparent PNG or SVG looks
-best; say so if they send a JPG with a white box.
+Ask for the organization name, and handle the logo:
+
+- **The user attached an image** (now or earlier in the conversation): that is
+  the logo. Do not ask whether they have one; say "I'll use the logo you
+  attached". Find the file on disk: attachments are saved under an uploads
+  folder (for example `~/.claude/uploads/<session>/`, or the path shown with the
+  attachment); search for it by file name if needed. Copy it to
+  `gantt/<slug>/logo.<ext>` and set `"logo": "logo.<ext>"` in the plan.
+- **The image is only visible in the chat** and you cannot find a file for it:
+  ask the user to drag the file into the terminal (that pastes its path) or give
+  a path or URL. Do not build without it if they want a logo.
+- **No image:** ask if they want a logo (file path, URL, or attach one). It is
+  optional.
+
+Transparent PNG or SVG looks best; mention it if they send a JPG with a white
+box. `build.mjs` prints a `logo:` line. If it says `none` when the user gave a
+logo, fix the path before showing the chart.
 
 ### 5. Palette
 
-Always ask this before building. Build the chooser page:
+Always ask this before building, and show it as a picture, not a link.
 
-```bash
-node $SKILL/scripts/palette-page.mjs --title "<title>" --phases "<phase1>,<phase2>,..." gantt/<slug>/palettes.html
-```
+1. Build the chooser page. If there is a logo, look at it, pick 3 or 4 of its
+   main colors that work as bar colors (skip near-white and near-black
+   backgrounds, keep them distinct), and pass them as a suggested palette:
 
-If the user gave a logo, look at it, pick 3 or 4 of its main colors that work as
-bar colors (skip near-white and near-black backgrounds, keep enough contrast
-between them), and pass them as a suggested palette:
+   ```bash
+   node $SKILL/scripts/palette-page.mjs --title "<title>" --phases "<group1>,<group2>,..." [--logo --custom "#0b5fff,#00a389,#ffb020" --custom-name "From your logo"] gantt/<slug>/palettes.html
+   ```
 
-```bash
-node $SKILL/scripts/palette-page.mjs --title "<title>" --phases "..." --logo --custom "#0b5fff,#00a389,#ffb020,#e5484d" --custom-name "From your logo" gantt/<slug>/palettes.html
-```
+2. Render it to a PNG and show the PNG to the user:
 
-Open the page and ask the user to pick by number or name, or to give their own
-hex codes. The script prints which number maps to which palette. Store the
-choice in `plan.json` as an id (`"bloom"`) or a custom object
-(`{"name":"Brand","colors":[...],"today":"#hex"}`).
+   ```bash
+   node $SKILL/scripts/render-png.mjs gantt/<slug>/palettes.html gantt/<slug>/palettes.png
+   ```
+
+   Show it inline: in the Claude app or a cloud session, send the PNG as a file
+   so it renders in the chat; in a terminal on the user's machine, open the PNG
+   with the OS opener. If the script exits with code 2 (no Playwright), open
+   `palettes.html` in the browser instead.
+
+3. Ask with AskUserQuestion, one question, up to 4 options, each with a
+   `preview` showing the colors per group. If there is a logo palette, offer it
+   first as "(Recommended)", then Bloom, Harbor, Studio; otherwise Bloom,
+   Harbor, Studio, Citrus. Say in the question that Ink, the others, or their own
+   hex codes can be typed under "Other". Preview format:
+
+   ```
+   Discovery  ■■■■■■  #E5487F
+   Design     ■■■■■■  #4FAE5C
+   Build      ■■■■■■  #EF8A3A
+   Launch     ■■■■■■  #7867E0
+   Today line         #4B44C8
+   ```
+
+   Use the user's real group titles, cycling colors when there are more groups
+   than colors. Built-in palettes: `$SKILL/scripts/palettes.mjs`.
+
+Store the choice in `plan.json` as an id (`"bloom"`) or a custom object
+(`{"name":"From your logo","colors":[...],"today":"#hex"}`).
 
 ### 6. Confirm and build
 
@@ -165,7 +201,14 @@ counts, the date range, the palette,
 the branding, and anything still missing. Ask for a go-ahead (AskUserQuestion:
 "Build it" / "Change something"). Only after a yes, write `plan.json` and run
 `build.mjs`. Fix any errors it
-reports and pass its warnings on to the user. Open the chart.
+reports and pass its warnings on to the user.
+
+Then show the result the same way as the palette: render a preview with
+`render-png.mjs gantt/<slug>/<slug>.html gantt/<slug>/<slug>.png --viewport-only
+--width 1440` and show the PNG inline, and give the HTML path (open it on the
+user's machine when there is a desktop). Check the preview yourself before
+sending: the logo is in the header if one was given, the group titles and
+colors match what the user chose.
 
 Tell the user what the chart does, in one short list:
 

@@ -23,8 +23,8 @@ In Claude Code, ask for a Gantt or type `/gantt`. The skill asks, in order:
 1. **Source:** interview from scratch, paste a doc (PRD, notes), a CSV or Excel file, or pull from Jira, monday.com or Linear through their connectors.
 2. **Titles:** chart title, subtitle, and a title for each group (phase card). Always asked, with suggestions from your source.
 3. **Gaps:** only what the source did not give: dates, owners, dependencies, milestones.
-4. **Branding:** organization name and logo.
-5. **Palette:** opens a chooser page with five built-in palettes, one pulled from your logo, or your own hex codes.
+4. **Branding:** organization name and logo. A logo you attach in the chat is picked up and placed in the chart header.
+5. **Palette:** shows the palette options as an image in the chat (five built-in palettes, one pulled from your logo, or your own hex codes), then asks you to pick in a selection prompt with color previews.
 6. **Build:** writes `gantt/<plan>/plan.json` and `gantt/<plan>/<plan>.html` and opens it.
 
 ## The chart
@@ -45,6 +45,7 @@ All in `skill/gantt/scripts`, no dependencies:
 | `node build.mjs plan.json [out.html]` | Validate a plan and build the chart |
 | `node palette-page.mjs --title T --phases "A,B" out.html` | Build the palette chooser |
 | `node csv-to-plan.mjs tasks.csv plan.json` | Convert a task list |
+| `node render-png.mjs page.html out.png` | Screenshot the palette chooser or a chart (needs Playwright) |
 | `node extract.mjs chart.html [plan.json]` | Read a plan back out of a chart |
 
 The plan format is documented in [`skill/gantt/reference/plan-schema.md`](skill/gantt/reference/plan-schema.md).
