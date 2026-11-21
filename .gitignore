@@ -1,29 +1,27 @@
-.claude/settings.local.json
-.claude/worktrees/
+# Dependencies and generated output
+node_modules/
+examples-out/
+test-results/
+_site/
+
+# Local environment
 .env
 .env.local
 .env.*.local
+.DS_Store
 
-# Dev-only harness (shachafnave/beautiful-harness), never committed.
-# Re-create with: git clone https://github.com/shachafnave/beautiful-harness harness && harness/scripts/bootstrap.sh .
-/harness/
-# Keep the product skill link so any session in this repo can run /gantt.
+# Local AI-assistant tooling used while developing (not part of the project).
+# The skill links in .claude/skills/gantt and .agents/skills/gantt are kept.
 /.claude/*
 !/.claude/skills/
 /.claude/skills/*
 !/.claude/skills/gantt
+/harness/
 /AGENTS.md
 /CLAUDE.md
 /.mcp.json
 /skills-lock.json
 /THIRD_PARTY_LICENSES.md
 /.github/pull_request_template.md
-/docs/codebase-map.md
-/docs/error-log.md
-/docs/design-guidelines.md
-/docs/mcp.md
+/docs/
 /mockups/
-
-node_modules/
-examples-out/
-test-results/
