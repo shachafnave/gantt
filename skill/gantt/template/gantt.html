@@ -382,13 +382,14 @@ function summaryBar(p,col){
 function drawDeps(inner=$("inner")){
   const svg=inner.querySelector("svg.deps"); if(!svg) return;
   const ib=inner.getBoundingClientRect();
+  const k = inner.offsetWidth ? ib.width / inner.offsetWidth : 1; // presenter slides are CSS-scaled
   svg.setAttribute("width", inner.scrollWidth); svg.setAttribute("height", inner.scrollHeight);
   if (!showDeps){ svg.innerHTML=""; return; }
   const pos={};
   plan.phases.forEach((p,pi)=>(p.tasks||[]).forEach(t=>{
     const row=inner.querySelector(`[data-row="${CSS.escape(String(t.id))}"]`); if(!row||!t.start) return;
     const r=row.getBoundingClientRect();
-    pos[t.id]={x1:LEFT+px(t.start), x2:LEFT+(t.milestone?px(t.start)+6:px(addDays(tEnd(t),1))), y:r.top-ib.top+r.height/2, col:phaseColor(p,pi), ms:t.milestone};
+    pos[t.id]={x1:LEFT+px(t.start), x2:LEFT+(t.milestone?px(t.start)+6:px(addDays(tEnd(t),1))), y:(r.top-ib.top+r.height/2)/k, col:phaseColor(p,pi), ms:t.milestone};
   }));
   let out="";
   for (const p of plan.phases) for (const t of (p.tasks||[])){

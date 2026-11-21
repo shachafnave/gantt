@@ -172,6 +172,17 @@ await step("present mode: overview, one slide per group, milestones; keys and Es
   await page.keyboard.press("ArrowRight");
   assert.equal(await page.locator("#sH").textContent(), "Discovery");
   assert.equal(await page.locator("#sBody .bar").count(), 3);
+  // Build slide: the t7 -> t9 arrow must end on the Address autocomplete row, even though the slide is scaled.
+  await page.evaluate(() => window.__gantt.go(3));
+  const arrow = await page.evaluate(() => {
+    const inner = document.querySelector("#sBody .inner"), k = inner.getBoundingClientRect().width / inner.offsetWidth;
+    const row = inner.querySelector('[data-row="t9"]').getBoundingClientRect(), top = inner.getBoundingClientRect().top;
+    const want = (row.top - top + row.height / 2) / k;
+    const ends = [...inner.querySelectorAll("svg.deps path")].map((p) => { const v = [...p.getAttribute("d").matchAll(/V\s*([\d.]+)/g)]; return v.length ? Number(v.at(-1)[1]) : NaN; });
+    return { want, k, ok: ends.some((y) => Math.abs(y - want) < 1.5) };
+  });
+  assert.ok(arrow.k < 1, "test should run on a scaled slide");
+  assert.ok(arrow.ok, `no arrow ends on the t9 row (y=${arrow.want})`);
   await page.keyboard.press("End");
   assert.equal(await page.locator("#sH").textContent(), "Milestones");
   assert.equal(await page.locator(".ms-list .nm").count(), 2);

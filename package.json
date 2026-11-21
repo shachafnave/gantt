@@ -1,11 +1,36 @@
 {
-  "name": "gantt",
+  "name": "gantt-skill",
+  "version": "1.0.0",
   "private": true,
   "type": "module",
-  "description": "Claude skill that interviews you and builds a polished, interactive Gantt chart.",
+  "description": "Claude Code skill that interviews you and builds a polished, interactive Gantt chart with presenter mode and PowerPoint export.",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/shachafnave/gantt.git"
+  },
+  "homepage": "https://shachafnave.github.io/gantt/",
+  "bugs": {
+    "url": "https://github.com/shachafnave/gantt/issues"
+  },
+  "keywords": [
+    "gantt",
+    "roadmap",
+    "claude",
+    "claude-code",
+    "skill",
+    "product-management",
+    "timeline",
+    "pptx"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
   "scripts": {
     "build:example": "node skill/gantt/scripts/build.mjs skill/gantt/examples/checkout-v2.json examples-out/checkout-v2.html",
-    "test": "node tests/smoke.mjs"
+    "test": "node tests/smoke.mjs",
+    "site": "node scripts/build-site.mjs",
+    "screenshots": "node scripts/screenshots.mjs"
   },
   "devDependencies": {
     "html-to-image": "1.11.11",

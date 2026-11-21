@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>gantt | Roadmap charts from a conversation</title>
+<meta name="description" content="A Claude Code skill that interviews you and builds a polished, interactive Gantt chart with presenter mode and PowerPoint export.">
+<meta property="og:title" content="gantt | Roadmap charts from a conversation">
+<meta property="og:description" content="Answer a few questions, get an interactive Gantt chart, a slide deck and an editable PPTX.">
+<meta property="og:image" content="media/chart.png">
+<link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+:root{--paper:#f4f4f7;--surface:#fff;--ink:#22232a;--ink-2:#5d6070;--ink-3:#9a9cab;--rule:#e6e6ee;--accent:#4b44c8;--ease-out:cubic-bezier(0.23,1,0.32,1)}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--paper);color:var(--ink);font:500 1rem/1.55 "Manrope",system-ui,-apple-system,"Segoe UI",sans-serif}
+a{color:inherit}
+.wrap{max-width:1180px;margin:0 auto;padding:0 24px}
+nav{display:flex;align-items:center;gap:20px;padding:20px 0}
+.mark{font-weight:800;letter-spacing:-.02em;font-size:1.125rem;text-decoration:none;display:flex;align-items:center;gap:10px}
+.mark i{display:inline-grid;grid-template-rows:repeat(3,4px);gap:3px}
+.mark i b{height:4px;border-radius:2px;display:block}
+nav .sp{flex:1}
+nav a.link{text-decoration:none;color:var(--ink-2);font-weight:600;font-size:.9375rem}
+nav a.link:hover{color:var(--ink)}
+.btn{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--rule);background:var(--surface);border-radius:8px;padding:10px 16px;font:700 .9375rem "Manrope",sans-serif;color:var(--ink);text-decoration:none;transition:background-color 120ms ease,transform 140ms var(--ease-out)}
+.btn.primary{background:var(--ink);border-color:var(--ink);color:#fff}
+.btn:active{transform:scale(.97)}
+@media (hover:hover) and (pointer:fine){.btn:hover{background:#ececf2}.btn.primary:hover{background:#3a3b45}}
+header.hero{padding:56px 0 32px;display:grid;grid-template-columns:1.1fr .9fr;gap:48px;align-items:end}
+h1{margin:0;font-size:clamp(2.25rem,5vw,3.75rem);line-height:1.02;letter-spacing:-.035em;font-weight:800}
+.lede{font-size:1.1875rem;color:var(--ink-2);margin:20px 0 0;max-width:34ch}
+.cta{display:flex;gap:10px;flex-wrap:wrap;margin-top:28px}
+.install{background:var(--surface);border:1px solid var(--rule);border-radius:10px;padding:16px 18px;font:500 .875rem/1.7 "IBM Plex Mono",ui-monospace,monospace;color:var(--ink);overflow-x:auto}
+.install span{color:var(--ink-3)}
+.demo{border:1px solid var(--rule);border-radius:12px;overflow:hidden;background:var(--surface);box-shadow:0 24px 60px rgba(34,35,42,.10)}
+.demo .bar{display:flex;align-items:center;gap:10px;padding:10px 14px;border-bottom:1px solid var(--rule);font-size:.8125rem;color:var(--ink-2);font-weight:600}
+.demo .bar a{margin-left:auto;color:var(--accent);text-decoration:none}
+.demo iframe{display:block;width:100%;height:620px;border:0}
+.hint{font-size:.875rem;color:var(--ink-3);margin:10px 2px 0}
+section{padding:72px 0 0}
+h2{font-size:clamp(1.625rem,3vw,2.25rem);letter-spacing:-.025em;line-height:1.1;margin:0 0 12px;font-weight:800}
+.intro{color:var(--ink-2);max-width:60ch;margin:0 0 32px;font-size:1.0625rem}
+ol.steps{list-style:none;margin:0;padding:0;border-top:1px solid var(--rule)}
+ol.steps li{display:grid;grid-template-columns:64px 220px 1fr;gap:16px;padding:18px 0;border-bottom:1px solid var(--rule);align-items:baseline}
+ol.steps .n{font:500 .875rem "IBM Plex Mono",monospace;color:var(--ink-3)}
+ol.steps b{font-weight:700}
+ol.steps p{margin:0;color:var(--ink-2)}
+.split{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+figure{margin:0}
+figure img{width:100%;display:block;border-radius:10px;border:1px solid var(--rule);background:var(--surface)}
+figcaption{font-size:.875rem;color:var(--ink-3);margin-top:10px}
+.wide img{border-radius:12px}
+.list{columns:2;column-gap:48px;padding:0;margin:0;list-style:none}
+.list li{break-inside:avoid;padding:12px 0;border-bottom:1px solid var(--rule)}
+.list li b{display:block}
+.list li span{color:var(--ink-2)}
+footer{margin-top:96px;padding:28px 0 40px;border-top:1px solid var(--rule);display:flex;gap:20px;flex-wrap:wrap;font-size:.875rem;color:var(--ink-2)}
+footer .sp{flex:1}
+@media (max-width:880px){
+  header.hero{grid-template-columns:1fr;gap:28px;padding-top:32px}
+  .split{grid-template-columns:1fr}
+  ol.steps li{grid-template-columns:40px 1fr}
+  ol.steps p{grid-column:2}
+  .list{columns:1}
+  .demo iframe{height:520px}
+  nav a.link.hide-sm{display:none}
+}
+@media (prefers-reduced-motion:reduce){.btn:active{transform:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <nav>
+    <a class="mark" href="./"><i><b style="width:18px;background:#e5487f"></b><b style="width:12px;margin-left:6px;background:#4fae5c"></b><b style="width:14px;margin-left:3px;background:#7867e0"></b></i>gantt</a>
+    <span class="sp"></span>
+    <a class="link hide-sm" href="#how">How it works</a>
+    <a class="link hide-sm" href="#present">Present</a>
+    <a class="link" href="https://github.com/shachafnave/gantt">GitHub</a>
+  </nav>
+
+  <header class="hero">
+    <div>
+      <h1>Roadmap Gantt charts, built from a short conversation.</h1>
+      <p class="lede">A Claude Code skill. It asks what it needs, shows you palettes, and hands back one HTML file you can drag, present and export to PowerPoint.</p>
+      <div class="cta">
+        <a class="btn primary" href="demo/index.html">Open the live demo</a>
+        <a class="btn" href="https://github.com/shachafnave/gantt">Install from GitHub</a>
+      </div>
+    </div>
+    <div class="install" aria-label="Install commands">
+      <span># Node 18+ and Claude Code</span><br>
+      git clone https://github.com/shachafnave/gantt<br>
+      cd gantt &amp;&amp; ./install.sh<br>
+      <span># then, in Claude Code:</span><br>
+      /gantt
+    </div>
+  </header>
+
+  <div class="demo">
+    <div class="bar">Live demo: drag a bar, switch zoom, press P to present <a href="demo/index.html">Open full screen</a></div>
+    <iframe src="demo/index.html" title="Interactive Gantt chart demo" loading="lazy"></iframe>
+  </div>
+  <p class="hint">This is the exact file the skill produces, built from the example plan in the repo.</p>
+
+  <section id="how">
+    <h2>It interviews you first</h2>
+    <p class="intro">A chart is only as good as its inputs, so the skill asks before it draws. Complete data turns questions into quick confirmations; it never skips the parts that are yours to decide.</p>
+    <ol class="steps">
+      <li><span class="n">01</span><b>Source</b><p>Answer from scratch, paste a PRD or notes, drop a CSV or Excel file, or pull from Jira, monday.com or Linear.</p></li>
+      <li><span class="n">02</span><b>Titles</b><p>Chart title, subtitle, and a title for every group. Suggested from your source, confirmed by you.</p></li>
+      <li><span class="n">03</span><b>Gaps</b><p>Only what is missing: dates, owners, dependencies, milestones. Batched, never invented.</p></li>
+      <li><span class="n">04</span><b>Branding</b><p>Organization name and logo. Attach an image and it goes straight into the header.</p></li>
+      <li><span class="n">05</span><b>Palette</b><p>Shown as a picture in the chat, including one pulled from your logo, then picked from a prompt.</p></li>
+      <li><span class="n">06</span><b>Build</b><p>A summary to approve, then the chart, with a preview image so you see it before you open it.</p></li>
+    </ol>
+  </section>
+
+  <section>
+    <figure class="wide"><img src="media/palettes.png" alt="Palette chooser showing six palettes as mini Gantt previews with hex codes" loading="lazy"><figcaption>The palette chooser the skill shows before building.</figcaption></figure>
+  </section>
+
+  <section id="present">
+    <h2>Present it, or take it to PowerPoint</h2>
+    <p class="intro">Press P for a full-screen 16:9 deck: an overview, one slide per group, and the milestones. The PPTX export has the same slides, drawn as native shapes you can edit.</p>
+    <div class="split">
+      <figure><img src="media/present-overview.png" alt="Presenter overview slide with one bar per group" loading="lazy"><figcaption>Overview slide</figcaption></figure>
+      <figure><img src="media/present-group.png" alt="Presenter slide for the Build group" loading="lazy"><figcaption>One slide per group</figcaption></figure>
+    </div>
+  </section>
+
+  <section>
+    <h2>Everything in one file</h2>
+    <ul class="list">
+      <li><b>Drag to reschedule</b><span>Move bars, stretch their edges, undo with Ctrl or Cmd+Z.</span></li>
+      <li><b>Save keeps your edits</b><span>Save writes a new copy of the file with the changes inside.</span></li>
+      <li><b>Status from the dates</b><span>Done, On-going, Overdue and Upcoming, worked out from progress and today.</span></li>
+      <li><b>Day to Fit zoom</b><span>Four levels, collapsible groups, dependency arrows you can hide.</span></li>
+      <li><b>PNG, PDF, PPTX</b><span>A sharp image, a landscape page, or an editable deck.</span></li>
+      <li><b>Comes back for changes</b><span>Ask Claude to update a chart; it reads the plan back out of the file.</span></li>
+    </ul>
+  </section>
+
+  <footer>
+    <span>gantt is open source under the <a href="https://github.com/shachafnave/gantt/blob/main/LICENSE">MIT License</a>.</span>
+    <span class="sp"></span>
+    <a href="https://github.com/shachafnave/gantt#privacy">Privacy</a>
+    <a href="https://github.com/shachafnave/gantt/issues">Report an issue</a>
+    <a href="https://github.com/shachafnave/gantt/blob/main/CHANGELOG.md">Changelog</a>
+  </footer>
+</div>
+</body>
+</html>

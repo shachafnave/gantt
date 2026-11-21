@@ -1,0 +1,26 @@
+name: Bug report
+description: Something in the skill or the chart doesn't work as expected
+labels: [bug]
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened
+      description: What did you do, what did you expect, and what happened instead?
+    validations:
+      required: true
+  - type: textarea
+    id: plan
+    attributes:
+      label: Plan or input
+      description: If you can, paste the plan.json (remove anything private) or describe the source (CSV, Jira, pasted doc).
+      render: json
+  - type: input
+    id: env
+    attributes:
+      label: Environment
+      description: Browser and OS for chart issues; Claude Code version for interview issues.
+  - type: textarea
+    id: shots
+    attributes:
+      label: Screenshots
