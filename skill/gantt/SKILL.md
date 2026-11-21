@@ -16,8 +16,9 @@ file looks complete. A request to build a Gantt is a request to start the
 interview. Complete data shortens the interview (you confirm instead of ask);
 it never removes it.
 
-Steps 4 (branding) and 5 (palette) are always asked, whatever the source
-contains. Never pick a palette, title, or subtitle for the user and build.
+Steps 2 (titles), 4 (branding) and 5 (palette) are always asked, whatever the
+source contains. Never pick a chart title, subtitle, group title, or palette for
+the user and build.
 
 The only way to skip is the user saying so in their own words ("skip the
 questions", "just use defaults"). Then use defaults (`bloom` palette, no logo,
@@ -26,7 +27,8 @@ change them.
 
 | Thought | Reality |
 | --- | --- |
-| "The spreadsheet has everything, I'll just build it." | Confirm what you extracted, then ask branding and palette. |
+| "The spreadsheet has everything, I'll just build it." | Confirm what you extracted, then ask titles, branding and palette. |
+| "The source already names the groups." | Show them and ask the user to keep or rename each one. |
 | "They only asked for the chart." | Asking for the chart is how the interview starts. |
 | "I'll use the default palette and mention it after." | The palette chooser is a required step. Show it and wait. |
 | "Asking will slow them down." | Batch the questions; one or two turns is enough. Building the wrong thing is slower. |
@@ -84,12 +86,35 @@ Ask where the plan comes from. Options:
   fields with the table in `plan-schema.md`. Ask which project, board, or epic to
   pull, and cap it at about 60 tasks unless the user wants more.
 
-### 2. Plan basics
+### 2. Titles
 
-Title, a one-line subtitle (team and time frame), and the phases in order. A
-phase is whatever groups the work: discovery and delivery stages, epics,
-workstreams, or quarters. Suggest phases from the source when you can and let
-the user correct them.
+Always ask, in one turn:
+
+- **Chart title**, shown large in the header and used for file names.
+- **Subtitle**, one line under it (team, time frame, version). Optional, but ask.
+- **A title for each group.** Groups are the phase cards: stages, epics,
+  workstreams, or quarters. List every group you found in the source, in order,
+  with its current name and task count, and ask the user to keep, rename,
+  merge, or reorder them. If the source has no grouping, propose groups and
+  ask. Group titles are what readers scan first, so source labels like
+  `EPIC-12` or `Phase 3` are worth renaming.
+
+Suggest a title and subtitle from the source so the user can just say "yes",
+for example:
+
+```
+Chart title:  Checkout v2 (suggested)
+Subtitle:     Payments squad | Nov 2026 to Feb 2027 (suggested)
+Groups:
+  1. Discovery   4 tasks
+  2. Design      3 tasks
+  3. Build       4 tasks
+  4. Launch      3 tasks
+Keep these, or tell me what to change.
+```
+
+Use exactly the names the user confirms. Store the group titles as
+`phases[].name`, in the confirmed order.
 
 ### 3. Gaps
 
@@ -135,7 +160,8 @@ choice in `plan.json` as an id (`"bloom"`) or a custom object
 
 ### 6. Confirm and build
 
-Show a compact summary: phases with task counts, the date range, the palette,
+Show a compact summary: the chart title and subtitle, the group titles with task
+counts, the date range, the palette,
 the branding, and anything still missing. Ask for a go-ahead (AskUserQuestion:
 "Build it" / "Change something"). Only after a yes, write `plan.json` and run
 `build.mjs`. Fix any errors it

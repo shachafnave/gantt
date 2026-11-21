@@ -21,7 +21,7 @@ Working inside this repo needs no install: `.claude/skills/gantt` is committed, 
 In Claude Code, ask for a Gantt or type `/gantt`. The skill asks, in order:
 
 1. **Source:** interview from scratch, paste a doc (PRD, notes), a CSV or Excel file, or pull from Jira, monday.com or Linear through their connectors.
-2. **Plan basics:** title, subtitle, phases.
+2. **Titles:** chart title, subtitle, and a title for each group (phase card). Always asked, with suggestions from your source.
 3. **Gaps:** only what the source did not give: dates, owners, dependencies, milestones.
 4. **Branding:** organization name and logo.
 5. **Palette:** opens a chooser page with five built-in palettes, one pulled from your logo, or your own hex codes.
