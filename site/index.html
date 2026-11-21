@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>gantt | Roadmap charts from a conversation</title>
-<meta name="description" content="A Claude Code skill that interviews you and builds a polished, interactive Gantt chart with presenter mode and PowerPoint export.">
+<meta name="description" content="An agent skill for Claude Code, Codex and Cursor that interviews you and builds a polished, interactive Gantt chart with presenter mode and PowerPoint export.">
 <meta property="og:title" content="gantt | Roadmap charts from a conversation">
 <meta property="og:description" content="Answer a few questions, get an interactive Gantt chart, a slide deck and an editable PPTX.">
 <meta property="og:image" content="media/chart.png">
@@ -83,18 +83,17 @@ footer .sp{flex:1}
   <header class="hero">
     <div>
       <h1>Roadmap Gantt charts, built from a short conversation.</h1>
-      <p class="lede">A Claude Code skill. It asks what it needs, shows you palettes, and hands back one HTML file you can drag, present and export to PowerPoint.</p>
+      <p class="lede">An agent skill for Claude Code, Codex and Cursor. It asks what it needs, shows you palettes, and hands back one HTML file you can drag, present and export to PowerPoint.</p>
       <div class="cta">
         <a class="btn primary" href="demo/index.html">Open the live demo</a>
         <a class="btn" href="https://github.com/shachafnave/gantt">Install from GitHub</a>
       </div>
     </div>
     <div class="install" aria-label="Install commands">
-      <span># Node 18+ and Claude Code</span><br>
+      <span># Node 18+ and Claude Code, Codex or Cursor</span><br>
       git clone https://github.com/shachafnave/gantt<br>
       cd gantt &amp;&amp; ./install.sh<br>
-      <span># then, in Claude Code:</span><br>
-      /gantt
+      <span># then: /gantt (Claude Code, Cursor) or $gantt (Codex)</span>
     </div>
   </header>
 
@@ -108,7 +107,7 @@ footer .sp{flex:1}
     <h2>It interviews you first</h2>
     <p class="intro">A chart is only as good as its inputs, so the skill asks before it draws. Complete data turns questions into quick confirmations; it never skips the parts that are yours to decide.</p>
     <ol class="steps">
-      <li><span class="n">01</span><b>Source</b><p>Answer from scratch, paste a PRD or notes, drop a CSV or Excel file, or pull from Jira, monday.com or Linear.</p></li>
+      <li><span class="n">01</span><b>Source</b><p>Answer from scratch, paste a PRD or notes, drop a CSV or Excel file, or pull from Jira, monday.com or Linear through your agent's connectors.</p></li>
       <li><span class="n">02</span><b>Titles</b><p>Chart title, subtitle, and a title for every group. Suggested from your source, confirmed by you.</p></li>
       <li><span class="n">03</span><b>Gaps</b><p>Only what is missing: dates, owners, dependencies, milestones. Batched, never invented.</p></li>
       <li><span class="n">04</span><b>Branding</b><p>Organization name and logo. Attach an image and it goes straight into the header.</p></li>
@@ -138,7 +137,7 @@ footer .sp{flex:1}
       <li><b>Status from the dates</b><span>Done, On-going, Overdue and Upcoming, worked out from progress and today.</span></li>
       <li><b>Day to Fit zoom</b><span>Four levels, collapsible groups, dependency arrows you can hide.</span></li>
       <li><b>PNG, PDF, PPTX</b><span>A sharp image, a landscape page, or an editable deck.</span></li>
-      <li><b>Comes back for changes</b><span>Ask Claude to update a chart; it reads the plan back out of the file.</span></li>
+      <li><b>Comes back for changes</b><span>Ask your agent to update a chart; it reads the plan back out of the file.</span></li>
     </ul>
   </section>
 

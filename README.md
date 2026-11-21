@@ -2,7 +2,7 @@
 
 **Roadmap Gantt charts, built from a short conversation.**
 
-A [Claude Code](https://claude.com/claude-code) skill for product managers. It interviews you, shows you palette options, and hands back one self-contained HTML file you can drag, present full screen, and export to PNG, PDF or an editable PowerPoint deck.
+An agent skill for product managers that works in [Claude Code](https://claude.com/claude-code), [Codex](https://developers.openai.com/codex/skills) and [Cursor](https://cursor.com/docs/skills). It interviews you, shows you palette options, and hands back one self-contained HTML file you can drag, present full screen, and export to PNG, PDF or an editable PowerPoint deck.
 
 **[Try the live demo](https://shachafnave.github.io/gantt/demo/)**, the exact file the skill produces.
 
@@ -10,7 +10,7 @@ A [Claude Code](https://claude.com/claude-code) skill for product managers. It i
 
 ## Install
 
-You need [Claude Code](https://claude.com/claude-code) and [Node](https://nodejs.org) 18 or newer.
+You need [Node](https://nodejs.org) 18 or newer and at least one of Claude Code, Codex or Cursor.
 
 ```bash
 git clone https://github.com/shachafnave/gantt
@@ -20,19 +20,28 @@ git clone https://github.com/shachafnave/gantt
 cd gantt && ./install.sh
 ```
 
-That links the skill into `~/.claude/skills/gantt`, so `/gantt` works in every project. Options:
+That installs the skill for every supported agent, user-wide, as links back to the clone:
 
-- `./install.sh --project` installs it for the current directory only.
-- `--copy` copies the files instead of linking them.
-- Inside this repo nothing needs installing: `.claude/skills/gantt` is committed.
+| Agent | Installed at | Start it with |
+| --- | --- | --- |
+| Claude Code | `~/.claude/skills/gantt` | `/gantt` |
+| Codex | `~/.codex/skills/gantt` | `$gantt`, or pick it from `/skills` |
+| Cursor | reads the Claude Code and Codex folders | `/gantt` in Agent chat |
 
-To update, `git pull` in the clone. A linked install picks the change up immediately.
+Or just ask for a Gantt chart: every agent picks the skill up from its description. Options:
+
+- `./install.sh codex` (or `claude`, `cursor`) installs for one agent only. `./install.sh cursor` on its own uses `~/.cursor/skills`.
+- `--project` installs into the current project (`.claude/skills`, `.agents/skills`, `.cursor/skills`) instead of user-wide.
+- `--copy` copies the files instead of linking them. `--uninstall` removes what was installed.
+- Inside this repo nothing needs installing: `.claude/skills/gantt` and `.agents/skills/gantt` are committed.
+
+To update, `git pull` in the clone. Linked installs pick the change up in the next session.
 
 ## Use
 
-In Claude Code, ask for a Gantt ("build me a roadmap for the Q1 onboarding revamp") or type `/gantt`. Attach a spreadsheet, paste a PRD, or start from nothing. The skill always runs a short interview before it draws anything:
+In your agent, ask for a Gantt ("build me a roadmap for the Q1 onboarding revamp") or start the skill directly (`/gantt` in Claude Code and Cursor, `$gantt` in Codex). Attach a spreadsheet, paste a PRD, or start from nothing. The skill always runs a short interview before it draws anything:
 
-1. **Source:** interview from scratch, paste text or a document, a CSV or Excel file, or pull from Jira, monday.com or Linear through their Claude connectors.
+1. **Source:** interview from scratch, paste text or a document, a CSV or Excel file, or pull from Jira, monday.com or Linear through your agent's connectors or MCP servers.
 2. **Titles:** chart title, subtitle, and a title for each group (phase card). Suggested from your source, confirmed by you.
 3. **Gaps:** only what the source didn't give: dates, owners, dependencies, milestones. Batched, never invented.
 4. **Branding:** organization name and logo. Attach an image and it goes into the header.
@@ -56,7 +65,7 @@ Files land in `gantt/<plan-name>/`: `plan.json`, the chart HTML, and your logo. 
 | --- | --- |
 | ![Overview slide](media/present-overview.png) | ![Build group slide](media/present-group.png) |
 
-To change a chart later, ask Claude to update it. It reads the plan back out of the HTML, including edits you saved.
+To change a chart later, ask your agent to update it. It reads the plan back out of the HTML, including edits you saved.
 
 ## Plan format
 
@@ -99,7 +108,7 @@ Your plan stays on your machine. The chart is a static file with no analytics, t
 - Fonts (Manrope, IBM Plex Mono) from Google Fonts when the chart opens. Without a connection it falls back to system fonts.
 - The export libraries, [PptxGenJS](https://github.com/gitbrent/PptxGenJS) and [html-to-image](https://github.com/bubkoo/html-to-image), from jsDelivr the first time you export PPTX or PNG. Nothing from your plan is sent; the files are built in your browser.
 
-When you use the skill, Claude Code processes your plan like any other conversation content, under your Claude account's terms.
+When you use the skill, your agent (Claude Code, Codex or Cursor) processes your plan like any other conversation content, under that provider's terms.
 
 ## Development
 

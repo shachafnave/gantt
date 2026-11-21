@@ -1,9 +1,9 @@
 {
   "name": "gantt-skill",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "private": true,
   "type": "module",
-  "description": "Claude Code skill that interviews you and builds a polished, interactive Gantt chart with presenter mode and PowerPoint export.",
+  "description": "Agent skill for Claude Code, Codex and Cursor that interviews you and builds a polished, interactive Gantt chart with presenter mode and PowerPoint export.",
   "license": "MIT",
   "repository": {
     "type": "git",
@@ -14,14 +14,17 @@
     "url": "https://github.com/shachafnave/gantt/issues"
   },
   "keywords": [
-    "gantt",
-    "roadmap",
+    "agent-skills",
     "claude",
     "claude-code",
-    "skill",
+    "codex",
+    "cursor",
+    "gantt",
+    "pptx",
     "product-management",
-    "timeline",
-    "pptx"
+    "roadmap",
+    "skill",
+    "timeline"
   ],
   "engines": {
     "node": ">=18"

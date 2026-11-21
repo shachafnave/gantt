@@ -2,6 +2,21 @@
 
 All notable changes are listed here. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses [Semantic Versioning](https://semver.org/).
 
+## [1.1.0] - 2026-11-21
+
+### Added
+
+- Works in Codex and Cursor as well as Claude Code. `install.sh` installs for every supported agent, or one with `claude`, `codex` or `cursor`; `--project` installs into the current project and `--uninstall` removes it.
+- `.agents/skills/gantt` is committed, so Codex and Cursor pick the skill up inside this repo.
+
+### Changed
+
+- `SKILL.md` instructions are agent-neutral: choice prompts and inline images fall back to plain text and the OS opener where an agent lacks them.
+
+### Fixed
+
+- A broken table row in `SKILL.md` that ran into the Scripts section.
+
 ## [1.0.0] - 2026-11-21
 
 First public release.

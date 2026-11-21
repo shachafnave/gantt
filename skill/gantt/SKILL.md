@@ -32,8 +32,22 @@ change them.
 | "They only asked for the chart." | Asking for the chart is how the interview starts. |
 | "I'll use the default palette and mention it after." | The palette chooser is a required step. Show it and wait. |
 | "Asking will slow them down." | Batch the questions; one or two turns is enough. Building the wrong thing is slower. |
-| "I'll ask everything in one long message." | Use AskUserQuestion for choices and keep each turn short. | The scripts are plain Node (18+), no install step. They live next to this
-file: use the skill's base directory (shown when the skill loads) as `$SKILL`.
+| "I'll ask everything in one long message." | Ask choices one step at a time and keep each turn short. |
+
+## Works in any agent
+
+These instructions are written for any coding agent that supports Agent Skills
+(Claude Code, Codex, Cursor and others). Where a step says "ask with a choice
+prompt", use the agent's structured question tool if it has one (for example
+AskUserQuestion in Claude Code); otherwise ask in plain text with numbered
+options and wait for the reply. Where it says "show an image", attach or send the
+file if the agent can display files in the chat; otherwise open it with the OS
+opener and give the path.
+
+## Scripts
+
+The scripts are plain Node (18+), no install step. They live next to this file:
+use the folder that contains this `SKILL.md` as `$SKILL`.
 
 | Script | Does |
 | --- | --- |
@@ -59,9 +73,8 @@ file instead and say where it is.
 
 ## The interview
 
-Ask in this order. Use the AskUserQuestion tool for every step that has choices
-(source, palette, yes/no confirmations); if it is not available, ask in plain
-text and wait for the answer. Do not ask for facts the source already contains:
+Ask in this order. Use a choice prompt for every step that has choices (source,
+palette, yes/no confirmations), as described under "Works in any agent". Do not ask for facts the source already contains:
 show what you extracted and ask the user to confirm or correct it. Keep each
 turn short, and wait for the user's answer before moving to the next step.
 
@@ -80,10 +93,10 @@ Ask where the plan comes from. Options:
   to CSV first (Python `openpyxl` or `pandas` if available; otherwise ask the
   user to save it as CSV), then run the script. If the column names do not match,
   rename the header row rather than guessing per row.
-- **Jira, monday.com, or Linear.** Use the connector tools for that service if
-  they are available in this session (search with ToolSearch for the service
-  name). If the connector needs sign-in, tell the user to authorize it in their
-  connector settings, and offer CSV export from that tool as the fallback. Map
+- **Jira, monday.com, or Linear.** Use the agent's connector or MCP tools for
+  that service if they are available in this session (search your tool list for
+  the service name). If they need sign-in, tell the user to authorize them in
+  the agent's settings, and offer CSV export from that tool as the fallback. Map
   fields with the table in `plan-schema.md`. Ask which project, board, or epic to
   pull, and cap it at about 60 tasks unless the user wants more.
 
@@ -169,12 +182,12 @@ Always ask this before building, and show it as a picture, not a link.
    node $SKILL/scripts/render-png.mjs gantt/<slug>/palettes.html gantt/<slug>/palettes.png
    ```
 
-   Show it inline: in the Claude app or a cloud session, send the PNG as a file
-   so it renders in the chat; in a terminal on the user's machine, open the PNG
+   Show it inline: if the agent can display files in the chat (desktop apps,
+   cloud sessions), send the PNG there so it renders; in a terminal on the user's machine, open the PNG
    with the OS opener. If the script exits with code 2 (no Playwright), open
    `palettes.html` in the browser instead.
 
-3. Ask with AskUserQuestion, one question, up to 4 options, each with a
+3. Ask with a choice prompt, one question, up to 4 options, each with a
    `preview` showing the colors per group. If there is a logo palette, offer it
    first as "(Recommended)", then Bloom, Harbor, Studio; otherwise Bloom,
    Harbor, Studio, Citrus. Say in the question that Ink, the others, or their own
@@ -198,8 +211,8 @@ Store the choice in `plan.json` as an id (`"bloom"`) or a custom object
 
 Show a compact summary: the chart title and subtitle, the group titles with task
 counts, the date range, the palette,
-the branding, and anything still missing. Ask for a go-ahead (AskUserQuestion:
-"Build it" / "Change something"). Only after a yes, write `plan.json` and run
+the branding, and anything still missing. Ask for a go-ahead with a choice prompt
+("Build it" / "Change something"). Only after a yes, write `plan.json` and run
 `build.mjs`. Fix any errors it
 reports and pass its warnings on to the user.
 
