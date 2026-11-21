@@ -1,0 +1,27 @@
+# Dependencies and generated output
+node_modules/
+examples-out/
+test-results/
+_site/
+
+# Local environment
+.env
+.env.local
+.env.*.local
+.DS_Store
+
+# Local AI-assistant tooling used while developing (not part of the project).
+# The skill links in .claude/skills/gantt and .agents/skills/gantt are kept.
+/.claude/*
+!/.claude/skills/
+/.claude/skills/*
+!/.claude/skills/gantt
+/harness/
+/AGENTS.md
+/CLAUDE.md
+/.mcp.json
+/skills-lock.json
+/THIRD_PARTY_LICENSES.md
+/.github/pull_request_template.md
+/docs/
+/mockups/
