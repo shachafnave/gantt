@@ -154,7 +154,7 @@ await step("PPTX export produces a deck", async () => {
   const p = join(OUT, "checkout-v2.pptx"); await dl.saveAs(p);
   const buf = readFileSync(p);
   assert.equal(buf.subarray(0, 2).toString(), "PK");
-  assert.ok(buf.includes("ppt/slides/slide1.xml"));
+  assert.ok(buf.includes("ppt/slides/slide6.xml") && !buf.includes("ppt/slides/slide7.xml"), "deck should mirror present mode: overview + 4 groups + milestones");
 });
 await step("PNG export produces an image", async () => {
   const [dl] = await Promise.all([page.waitForEvent("download", { timeout: 20000 }), page.click('[data-export="png"]')]);

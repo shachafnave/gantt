@@ -33,7 +33,7 @@ In Claude Code, ask for a Gantt or type `/gantt`. The skill asks, in order:
 - Drag bars to move them, drag edges to change dates, Ctrl or Cmd+Z to undo.
 - Day, Week, Month and Fit zoom. Click a phase to collapse it.
 - **Present** (or press P): full-screen 16:9 slides for meetings. An overview with one bar per group, a slide per group with larger type, and a milestones slide. Arrow keys or click to move, Esc to exit.
-- **Save** downloads a copy of the file with your edits. **PNG**, **PDF** (print to a fitted landscape page) and **PPTX** (native, editable shapes) export what you see. Exports fetch a small library from jsDelivr the first time.
+- **Save** downloads a copy of the file with your edits. **PNG**, **PDF** (print to a fitted landscape page) and **PPTX** (the same slides as Present mode, as native editable shapes) export what you see. Exports fetch a small library from jsDelivr the first time.
 
 To change a chart later, ask Claude to update it. It reads the plan back out of the HTML file, including your saved edits.
 

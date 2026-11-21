@@ -222,8 +222,9 @@ Tell the user what the chart does, in one short list:
 - **Save** downloads a copy of the file with their changes. Replace the old file
   with it.
 - **PNG** and **Export PPTX** download files. **PDF** opens the print dialog
-  fitted to a landscape page; choose "Save as PDF". The PPTX uses native shapes,
-  so it stays editable in PowerPoint and Keynote, one slide per page of rows.
+  fitted to a landscape page; choose "Save as PDF". The PPTX has the same
+  slides as Present mode (overview, one per group, milestones), drawn with
+  native shapes so it stays editable in PowerPoint and Keynote.
 - Exports load a small library from the internet the first time they run.
 
 ## Changing an existing chart
