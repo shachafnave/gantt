@@ -1,0 +1,21 @@
+.claude/settings.local.json
+.claude/worktrees/
+.env
+.env.local
+.env.*.local
+
+# Dev-only harness (shachafnave/beautiful-harness), never committed.
+# Re-create with: git clone https://github.com/shachafnave/beautiful-harness harness && harness/scripts/bootstrap.sh .
+/harness/
+/.claude/
+/AGENTS.md
+/CLAUDE.md
+/.mcp.json
+/skills-lock.json
+/THIRD_PARTY_LICENSES.md
+/.github/pull_request_template.md
+/docs/codebase-map.md
+/docs/error-log.md
+/docs/design-guidelines.md
+/docs/mcp.md
+/mockups/
