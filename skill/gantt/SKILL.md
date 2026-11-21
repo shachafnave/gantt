@@ -1,12 +1,36 @@
 ---
 name: gantt
-description: Build a polished, interactive Gantt chart for product management by interviewing the user, then writing one self-contained HTML file with drag-to-reschedule, zoom, and PNG, PDF and PPTX export. Use when the user asks for a Gantt, roadmap timeline, project timeline, release plan, or wants to turn a PRD, task list, CSV, Excel sheet, or Jira, monday or Linear data into a timeline.
+description: Build a polished, interactive Gantt chart for product management. Always runs a short interview first (source, basics, gaps, branding, palette chooser), then writes one self-contained HTML file with drag-to-reschedule, zoom, and PNG, PDF and PPTX export. Use when the user asks for a Gantt, roadmap timeline, project timeline, release plan, or wants to turn a PRD, task list, CSV, Excel sheet, or Jira, monday or Linear data into a timeline.
 ---
 
 # Gantt builder
 
 You interview the user, write a plan file, show a palette chooser, then build the
-chart. The scripts are plain Node (18+), no install step. They live next to this
+chart.
+
+## The interview is mandatory
+
+Every run goes through the interview below, in order, before anything is built.
+This holds even when the request is "build me a Gantt from this file" and the
+file looks complete. A request to build a Gantt is a request to start the
+interview. Complete data shortens the interview (you confirm instead of ask);
+it never removes it.
+
+Steps 4 (branding) and 5 (palette) are always asked, whatever the source
+contains. Never pick a palette, title, or subtitle for the user and build.
+
+The only way to skip is the user saying so in their own words ("skip the
+questions", "just use defaults"). Then use defaults (`bloom` palette, no logo,
+title from the source), build, and list the defaults you chose so they can
+change them.
+
+| Thought | Reality |
+| --- | --- |
+| "The spreadsheet has everything, I'll just build it." | Confirm what you extracted, then ask branding and palette. |
+| "They only asked for the chart." | Asking for the chart is how the interview starts. |
+| "I'll use the default palette and mention it after." | The palette chooser is a required step. Show it and wait. |
+| "Asking will slow them down." | Batch the questions; one or two turns is enough. Building the wrong thing is slower. |
+| "I'll ask everything in one long message." | Use AskUserQuestion for choices and keep each turn short. | The scripts are plain Node (18+), no install step. They live next to this
 file: use the skill's base directory (shown when the skill loads) as `$SKILL`.
 
 | Script | Does |
@@ -32,9 +56,14 @@ file instead and say where it is.
 
 ## The interview
 
-Ask in this order. Use the AskUserQuestion tool where the answers are choices.
-Ask only what you cannot get from what the user already gave you; never ask for
-something the source already contains. Keep each turn short.
+Ask in this order. Use the AskUserQuestion tool for every step that has choices
+(source, palette, yes/no confirmations); if it is not available, ask in plain
+text and wait for the answer. Do not ask for facts the source already contains:
+show what you extracted and ask the user to confirm or correct it. Keep each
+turn short, and wait for the user's answer before moving to the next step.
+
+If the user already chose the source (attached a file, pasted text, named a
+board), skip the step 1 question and say which source you are using.
 
 ### 1. Source
 
@@ -106,8 +135,10 @@ choice in `plan.json` as an id (`"bloom"`) or a custom object
 
 ### 6. Confirm and build
 
-Show a compact summary: phases with task counts, the date range, and anything
-still missing. Then write `plan.json` and run `build.mjs`. Fix any errors it
+Show a compact summary: phases with task counts, the date range, the palette,
+the branding, and anything still missing. Ask for a go-ahead (AskUserQuestion:
+"Build it" / "Change something"). Only after a yes, write `plan.json` and run
+`build.mjs`. Fix any errors it
 reports and pass its warnings on to the user. Open the chart.
 
 Tell the user what the chart does, in one short list:

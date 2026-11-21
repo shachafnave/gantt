@@ -14,7 +14,7 @@ git clone https://github.com/shachafnave/gantt
 cd gantt && ./install.sh
 ```
 
-That links the skill into `~/.claude/skills/gantt`. Use `./install.sh --project` to install it for one project only, or add `--copy` to copy instead of link.
+Working inside this repo needs no install: `.claude/skills/gantt` is committed, so Claude Code picks up `/gantt` here automatically. To use it in other projects, `./install.sh` links the skill into `~/.claude/skills/gantt`. Use `./install.sh --project` to install it for one project only, or add `--copy` to copy instead of link.
 
 ## Use
 

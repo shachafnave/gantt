@@ -7,7 +7,11 @@
 # Dev-only harness (shachafnave/beautiful-harness), never committed.
 # Re-create with: git clone https://github.com/shachafnave/beautiful-harness harness && harness/scripts/bootstrap.sh .
 /harness/
-/.claude/
+# Keep the product skill link so any session in this repo can run /gantt.
+/.claude/*
+!/.claude/skills/
+/.claude/skills/*
+!/.claude/skills/gantt
 /AGENTS.md
 /CLAUDE.md
 /.mcp.json
