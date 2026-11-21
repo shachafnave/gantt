@@ -1,0 +1,14 @@
+{
+  "name": "gantt",
+  "private": true,
+  "type": "module",
+  "description": "Claude skill that interviews you and builds a polished, interactive Gantt chart.",
+  "scripts": {
+    "build:example": "node skill/gantt/scripts/build.mjs skill/gantt/examples/checkout-v2.json examples-out/checkout-v2.html",
+    "test": "node tests/smoke.mjs"
+  },
+  "devDependencies": {
+    "html-to-image": "1.11.11",
+    "pptxgenjs": "3.12.0"
+  }
+}

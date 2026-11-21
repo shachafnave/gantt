@@ -19,3 +19,7 @@
 /docs/design-guidelines.md
 /docs/mcp.md
 /mockups/
+
+node_modules/
+examples-out/
+test-results/

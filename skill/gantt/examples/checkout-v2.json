@@ -1,0 +1,32 @@
+{
+  "title": "Checkout v2",
+  "subtitle": "Payments squad roadmap | Nov 2026 to Feb 2027",
+  "org": "Acme Payments",
+  "logo": "",
+  "palette": "bloom",
+  "today": "2026-11-21",
+  "phases": [
+    { "name": "Discovery", "tasks": [
+      { "id": "t1", "name": "Checkout funnel analysis", "owner": "NL", "start": "2026-11-02", "end": "2026-11-12", "pct": 100 },
+      { "id": "t2", "name": "Customer interviews (12)", "owner": "RS", "start": "2026-11-04", "end": "2026-11-19", "pct": 100 },
+      { "id": "t3", "name": "Competitor teardown", "owner": "NL", "start": "2026-11-09", "end": "2026-11-17", "pct": 100 },
+      { "id": "m1", "name": "Problem framing signed off", "milestone": true, "start": "2026-11-20", "deps": ["t1", "t2"], "done": true }
+    ]},
+    { "name": "Design", "tasks": [
+      { "id": "t4", "name": "Flow and wireframes", "owner": "MA", "start": "2026-11-16", "end": "2026-11-26", "pct": 70, "deps": ["m1"] },
+      { "id": "t5", "name": "Payment method picker UI", "owner": "MA", "start": "2026-11-19", "end": "2026-12-08", "pct": 20, "deps": ["t4"] },
+      { "id": "t6", "name": "Usability test round", "owner": "RS", "start": "2026-12-07", "end": "2026-12-15", "pct": 0, "deps": ["t5"] }
+    ]},
+    { "name": "Build", "tasks": [
+      { "id": "t7", "name": "Tokenized cards API", "owner": "YB", "start": "2026-11-16", "end": "2026-12-17", "pct": 35 },
+      { "id": "t8", "name": "Apple Pay and Google Pay", "owner": "DK", "start": "2026-12-16", "end": "2027-01-14", "pct": 0, "deps": ["t6"] },
+      { "id": "t9", "name": "Address autocomplete", "owner": "YB", "start": "2027-01-04", "end": "2027-01-21", "pct": 0, "deps": ["t7"] },
+      { "id": "t10", "name": "Fraud rules migration", "owner": "DK", "start": "2027-01-11", "end": "2027-01-28", "pct": 0 }
+    ]},
+    { "name": "Launch", "tasks": [
+      { "id": "t11", "name": "A/B test at 10% traffic", "owner": "NL", "start": "2027-02-01", "end": "2027-02-11", "pct": 0, "deps": ["t8", "t9"] },
+      { "id": "t12", "name": "Support playbook", "owner": "RS", "start": "2027-02-01", "end": "2027-02-09", "pct": 0 },
+      { "id": "m2", "name": "GA rollout", "milestone": true, "start": "2027-02-17", "deps": ["t11"] }
+    ]}
+  ]
+}
