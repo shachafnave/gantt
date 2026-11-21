@@ -13,6 +13,10 @@ All notable changes are listed here. The format follows [Keep a Changelog](https
 
 - `SKILL.md` instructions are agent-neutral: choice prompts and inline images fall back to plain text and the OS opener where an agent lacks them.
 
+### Removed
+
+- The GitHub Pages site and its deploy workflow. The README carries the screenshots.
+
 ### Fixed
 
 - A broken table row in `SKILL.md` that ran into the Scripts section.

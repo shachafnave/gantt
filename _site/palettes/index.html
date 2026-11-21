@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Choose a palette</title>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--paper:#f4f4f7;--surface:#fff;--ink:#22232a;--ink-2:#5d6070;--ink-3:#9a9cab;--rule:#e6e6ee}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font:500 .8125rem/1.35 "Manrope",system-ui,-apple-system,"Segoe UI",sans-serif;padding:28px 24px 40px}
+h1{margin:0;font-size:1.375rem;font-weight:700;letter-spacing:-.02em}
+.sub{margin:4px 0 22px;color:var(--ink-2)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px;max-width:1240px}
+.card{background:var(--surface);border:1px solid var(--rule);border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:12px}
+.card.suggested{border-color:var(--ink)}
+.head{display:flex;align-items:baseline;gap:10px}
+.n{font-weight:700;color:var(--ink-3);font-size:.75rem}
+.name{font-weight:700;font-size:.9375rem}
+.note{color:var(--ink-3);font-size:.75rem;margin-left:auto;text-align:right}
+.mini{border:1px solid var(--rule);border-radius:8px;padding:8px 10px;display:grid;gap:7px;position:relative;overflow:hidden}
+.mrow{display:grid;grid-template-columns:72px 1fr;align-items:center;gap:8px;font-size:.6875rem;font-weight:700}
+.mrow span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.lane{position:relative;height:14px}
+.lane .tr{position:absolute;left:0;right:0;top:50%;height:1px;opacity:.45}
+.lane .b{position:absolute;top:0;height:14px;border-radius:999px;display:flex;align-items:center;padding-left:2px}
+.lane .b i{width:10px;height:10px;border-radius:50%;background:#fff}
+.today{position:absolute;top:0;bottom:0;width:2px}
+.sw{display:flex;gap:6px;flex-wrap:wrap}
+.sw span{flex:1;min-width:52px;height:22px;border-radius:5px;display:flex;align-items:flex-end;padding:0 5px 3px;font-size:.5625rem;font-weight:700;color:rgba(255,255,255,.92)}
+.sw span.light{color:rgba(0,0,0,.6)}
+.card.ask{border-style:dashed;justify-content:center}
+.ask p{margin:0;color:var(--ink-2)}
+.ask code{font-size:.75rem;background:var(--paper);padding:1px 5px;border-radius:4px}
+</style>
+</head>
+<body>
+<h1 id="h"></h1>
+<p class="sub">Each phase takes one color. Reply in chat with the number or name. You can switch later without re-entering the plan.</p>
+<div class="grid" id="grid"></div>
+<script id="data" type="application/json">{
+ "title": "Checkout v2",
+ "phases": [
+  "Discovery",
+  "Design",
+  "Build",
+  "Launch"
+ ],
+ "palettes": [
+  {
+   "id": "bloom",
+   "name": "Bloom",
+   "note": "Bright and friendly",
+   "colors": [
+    "#e5487f",
+    "#4fae5c",
+    "#ef8a3a",
+    "#7867e0"
+   ],
+   "today": "#4b44c8"
+  },
+  {
+   "id": "harbor",
+   "name": "Harbor",
+   "note": "Calm blues and sand",
+   "colors": [
+    "#2a7fa8",
+    "#2aa198",
+    "#d9a43b",
+    "#d0644f"
+   ],
+   "today": "#1d3d5c"
+  },
+  {
+   "id": "studio",
+   "name": "Studio",
+   "note": "Muted, editorial",
+   "colors": [
+    "#3f6f73",
+    "#8a6a35",
+    "#4b5d8f",
+    "#87495a"
+   ],
+   "today": "#b4442f"
+  },
+  {
+   "id": "citrus",
+   "name": "Citrus",
+   "note": "High energy for kickoffs",
+   "colors": [
+    "#f2613f",
+    "#f5a524",
+    "#3fb489",
+    "#3d7be0"
+   ],
+   "today": "#22232a"
+  },
+  {
+   "id": "ink",
+   "name": "Ink",
+   "note": "One accent, print friendly",
+   "colors": [
+    "#22232a",
+    "#4f5160",
+    "#7c7f8f",
+    "#a8abb9"
+   ],
+   "today": "#e5487f"
+  }
+ ],
+ "hasLogo": false
+}</script>
+<script>
+const {title, phases, palettes, hasLogo} = JSON.parse(document.getElementById("data").textContent);
+const esc = s => String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const tint = (hex,pct) => { let h=hex.replace("#",""); if(h.length===3) h=h.split("").map(c=>c+c).join(""); const n=parseInt(h,16); return "#"+[n>>16&255,n>>8&255,n&255].map(v=>Math.round(255+(v-255)*pct/100).toString(16).padStart(2,"0")).join(""); };
+const light = hex => { const n=parseInt(hex.replace("#","").padEnd(6,"0"),16); return (0.299*(n>>16&255)+0.587*(n>>8&255)+0.114*(n&255)) > 170; };
+document.getElementById("h").textContent = `Pick a palette for "${title}"`;
+const names = phases.length ? phases.slice(0,5) : ["Discovery","Design","Build","Launch"];
+const lanes = names.map((_,i)=>{ const step=90/names.length, a=4+i*step*.9; return [[a, a+step*.7],[a+step*.8, a+step*1.3]].filter(([x,y])=>y<98); });
+let h = "", i = 0;
+for (const p of palettes){
+  i++;
+  h += `<div class="card ${p.suggested?"suggested":""}"><div class="head"><span class="n">${i}</span><span class="name">${esc(p.name)}</span><span class="note">${esc(p.note||"")}</span></div><div class="mini">`;
+  names.forEach((ph,j)=>{ const c=p.colors[j%p.colors.length];
+    h += `<div class="mrow"><span style="color:${c}">${esc(ph)}</span><div class="lane"><div class="tr" style="background:${c}"></div>${lanes[j].map(([a,b])=>`<div class="b" style="left:${a}%;width:${b-a}%;background:${tint(c,28)}"><i></i></div>`).join("")}</div></div>`;
+  });
+  h += `<div class="today" style="background:${p.today};left:calc(90px + (100% - 110px) * .55)"></div></div><div class="sw">${p.colors.map(c=>`<span class="${light(c)?"light":""}" style="background:${c}">${c.toUpperCase()}</span>`).join("")}</div></div>`;
+}
+if (!hasLogo) h += `<div class="card ask"><div class="head"><span class="n">${++i}</span><span class="name">From your logo</span></div><p>Send your logo file. Its main colors become a palette, shown here before anything is built.</p></div>`;
+h += `<div class="card ask"><div class="head"><span class="n">${++i}</span><span class="name">Custom</span></div><p>Give up to four hex codes, for example <code>#0B5FFF #00A389 #FFB020 #E5484D</code>. Extra phases reuse them in order.</p></div>`;
+document.getElementById("grid").innerHTML = h;
+</script>
+</body>
+</html>

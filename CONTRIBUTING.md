@@ -28,13 +28,7 @@ npm test
 
 The smoke test builds the example plan, drives the chart in headless Chromium (drag, resize, undo, zoom, collapse, save, presenter mode, PNG and PPTX export, hostile input) and writes screenshots to `test-results/`. Look at them when you change anything visual.
 
-To preview the GitHub Pages site:
-
-```bash
-npm run site
-```
-
-Then open `_site/index.html`. If you change the look of the chart, refresh the README images with `npm run screenshots`.
+If you change the look of the chart, refresh the README images with `npm run screenshots`.
 
 ## Pull requests
 

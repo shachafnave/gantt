@@ -9,7 +9,7 @@
     "type": "git",
     "url": "git+https://github.com/shachafnave/gantt.git"
   },
-  "homepage": "https://shachafnave.github.io/gantt/",
+  "homepage": "https://github.com/shachafnave/gantt#readme",
   "bugs": {
     "url": "https://github.com/shachafnave/gantt/issues"
   },
@@ -32,7 +32,6 @@
   "scripts": {
     "build:example": "node skill/gantt/scripts/build.mjs skill/gantt/examples/checkout-v2.json examples-out/checkout-v2.html",
     "test": "node tests/smoke.mjs",
-    "site": "node scripts/build-site.mjs",
     "screenshots": "node scripts/screenshots.mjs"
   },
   "devDependencies": {

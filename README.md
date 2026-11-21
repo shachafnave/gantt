@@ -4,8 +4,6 @@
 
 An agent skill for product managers that works in [Claude Code](https://claude.com/claude-code), [Codex](https://developers.openai.com/codex/skills) and [Cursor](https://cursor.com/docs/skills). It interviews you, shows you palette options, and hands back one self-contained HTML file you can drag, present full screen, and export to PNG, PDF or an editable PowerPoint deck.
 
-**[Try the live demo](https://shachafnave.github.io/gantt/demo/)**, the exact file the skill produces.
-
 ![A Gantt chart with phase cards, status pills, milestones, dependency arrows and a Today line](media/chart.png)
 
 ## Install
@@ -120,7 +118,7 @@ npm install
 npm test
 ```
 
-The smoke test builds the example plan and drives the chart in headless Chromium: drag, resize, undo, zoom, collapse, save, presenter mode, PNG and PPTX export, and hostile input. It needs Playwright with Chromium. `npm run site` builds the GitHub Pages site into `_site/`, and `npm run screenshots` refreshes the images in `media/`. See [CONTRIBUTING.md](CONTRIBUTING.md).
+The smoke test builds the example plan and drives the chart in headless Chromium: drag, resize, undo, zoom, collapse, save, presenter mode, PNG and PPTX export, and hostile input. It needs Playwright with Chromium. `npm run screenshots` refreshes the images in `media/`. See [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## Credits
 
