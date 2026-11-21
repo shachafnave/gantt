@@ -11,7 +11,7 @@
   --paper:#f4f4f7; --surface:#ffffff; --ink:#22232a; --ink-2:#5d6070; --ink-3:#9a9cab;
   --rule:#e6e6ee; --col:#f1f0fb; --today:#4b44c8;
   --ease-out:cubic-bezier(0.23,1,0.32,1);
-  --left:250px; --row:30px; --ghead:36px;
+  --left:250px; --row:30px; --ghead:36px; --ms:13px;
   --fs-xs:.6875rem; --fs-sm:.75rem; --fs-md:.8125rem; --fs-lg:1.125rem;
 }
 *{box-sizing:border-box}
@@ -59,6 +59,8 @@ html,body{margin:0;height:100%;background:var(--paper);color:var(--ink);font:500
 .row .lab .nm{overflow:hidden;text-overflow:ellipsis;min-width:0}
 .row.task{height:var(--row)}
 .row.ghead{height:var(--ghead)}
+.row.ghead .bar.sum{top:calc((var(--ghead) - var(--row)) / 2 + 5px);cursor:default}
+.row.ghead .ms{top:calc(var(--ghead) / 2 - var(--ms) / 2)}
 .row.ghead .lab{font-weight:700;font-size:var(--fs-md);cursor:pointer;user-select:none;border-radius:10px 0 0 0}
 .row.ghead .lab .caret{color:var(--ink-3);font-size:10px;width:10px;flex:none;transition:transform 160ms var(--ease-out)}
 .card.collapsed .caret{transform:rotate(-90deg)}
@@ -71,18 +73,18 @@ html,body{margin:0;height:100%;background:var(--paper);color:var(--ink);font:500
 .cols{position:absolute;inset:0;pointer-events:none;z-index:1;mix-blend-mode:multiply}
 .cols div{position:absolute;top:0;bottom:0;background:var(--col)}
 
-.bar{position:absolute;top:5px;height:20px;border-radius:999px;display:flex;align-items:center;gap:6px;padding:0 10px 0 3px;font-size:var(--fs-xs);font-weight:700;white-space:nowrap;cursor:grab;z-index:3;touch-action:none;user-select:none;overflow:hidden;transition:filter 120ms ease}
+.bar{position:absolute;top:5px;height:calc(var(--row) - 10px);border-radius:999px;display:flex;align-items:center;gap:6px;padding:0 10px 0 3px;font-size:var(--fs-xs);font-weight:700;white-space:nowrap;cursor:grab;z-index:3;touch-action:none;user-select:none;overflow:hidden;transition:filter 120ms ease}
 .bar .chip{display:flex;align-items:center;gap:5px;min-width:0}
-.bar .chip i{width:14px;height:14px;border-radius:50%;background:#fff;flex:none}
+.bar .chip i{width:calc(var(--row) - 16px);height:calc(var(--row) - 16px);border-radius:50%;background:#fff;flex:none}
 .bar .chip span{overflow:hidden;text-overflow:ellipsis}
 .bar .pct{margin-left:auto;font-family:"IBM Plex Mono",ui-monospace,monospace;font-weight:500;padding-left:8px}
 .bar .h{position:absolute;top:0;bottom:0;width:9px;cursor:ew-resize}
 .bar .h.l{left:0}.bar .h.r{right:0}
 .bar.dragging{cursor:grabbing;filter:brightness(.97);z-index:8}
 .bar.slim .pct{display:none}
-.outlbl{position:absolute;top:8px;font-size:var(--fs-xs);font-weight:600;color:var(--ink-2);white-space:nowrap;z-index:3;pointer-events:none}
+.outlbl{position:absolute;top:calc(var(--row) / 2 - 7px);font-size:var(--fs-xs);font-weight:600;color:var(--ink-2);white-space:nowrap;z-index:3;pointer-events:none}
 @media (hover:hover) and (pointer:fine){.bar:hover{filter:brightness(.97)}}
-.ms{position:absolute;top:8px;width:13px;height:13px;transform:rotate(45deg);border-radius:2px;z-index:3}
+.ms{position:absolute;top:calc(var(--row) / 2 - var(--ms) / 2);width:var(--ms);height:var(--ms);transform:rotate(45deg);border-radius:2px;z-index:3}
 
 .today{position:absolute;top:44px;bottom:0;width:2px;background:var(--today);z-index:6;pointer-events:none}
 .today::before{content:"";position:absolute;top:-4px;left:-4px;width:10px;height:10px;border-radius:50%;background:var(--today)}
@@ -106,6 +108,53 @@ svg.deps path{fill:none;stroke-width:1.25;opacity:.7}
   .scalehead,.row .lab,.scalehead .lab{position:relative}
   .card{break-inside:avoid}
 }
+
+/* ---------- Present mode: 16:9 stage scaled to the screen ---------- */
+.present{position:fixed;inset:0;z-index:50;background:#e9e9ef;display:none;align-items:center;justify-content:center;overflow:hidden;cursor:default}
+.presenting .present{display:flex}
+.presenting #capture,.presenting .tip{display:none}
+.stage{position:absolute;left:50%;top:50%;width:1920px;height:1080px;background:var(--paper);transform-origin:0 0;display:flex;flex-direction:column;padding:56px 64px 40px;
+  --fs-xs:1rem; --fs-sm:1.15rem; --fs-md:1.35rem; --fs-lg:2rem; --left:380px; --ms:18px}
+.s-head{display:flex;align-items:flex-end;gap:28px;margin-bottom:28px;min-height:110px}
+.s-brand{display:flex;align-items:center;gap:20px;padding-right:28px;border-right:1px solid var(--rule);align-self:stretch}
+.s-brand:empty{display:none}
+.s-brand img{max-height:64px;max-width:240px;display:block}
+.s-titles{min-width:0;flex:1}
+.s-kicker{font-size:1rem;font-weight:700;color:var(--ink-2);text-transform:uppercase;letter-spacing:.1em;margin-bottom:6px}
+.s-h{margin:0;font-size:3.25rem;line-height:1.05;font-weight:700;letter-spacing:-.025em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.s-sub{margin:10px 0 0;font-size:1.35rem;color:var(--ink-2)}
+.s-sub:empty{display:none}
+.s-body{flex:1;min-height:0;position:relative;overflow:hidden}
+.s-body .inner{margin:0}
+.s-body .scalehead{height:48px;position:relative}
+.s-body .scalehead .lab,.s-body .row .lab{position:relative}
+.s-body .row .lab{padding-left:22px}
+.s-body .caret{display:none}
+.s-body .row.ghead .lab{font-size:1.6rem}
+.s-body .pctg{font-size:1.1rem}
+.s-body .row.ghead .lab{cursor:default}
+.s-body .bar{padding-right:14px;cursor:default}
+.s-body .bar .h{display:none}
+.s-body .today::before{width:14px;height:14px;left:-6px;top:-6px}
+.s-foot{display:flex;align-items:center;gap:16px;margin-top:20px;font-size:1.05rem;color:var(--ink-3);font-weight:600}
+.s-foot .dots{display:flex;gap:8px;margin-left:auto}
+.s-foot .dots i{width:10px;height:10px;border-radius:50%;background:var(--rule)}
+.s-foot .dots i.on{background:var(--ink)}
+.s-foot .count{font-family:"IBM Plex Mono",ui-monospace,monospace;color:var(--ink-2);min-width:70px;text-align:right}
+.s-hint{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);background:var(--ink);color:#fff;font-size:.8125rem;font-weight:600;padding:8px 14px;border-radius:8px;opacity:0;transition:opacity 300ms ease;pointer-events:none;z-index:52}
+.s-hint.on{opacity:.92}
+.s-exit{position:fixed;top:14px;right:14px;z-index:52;opacity:0;transition:opacity 200ms ease}
+.present:hover .s-exit,.s-exit:focus-visible{opacity:1}
+/* Milestones slide */
+.ms-list{max-width:1400px;display:grid;grid-template-columns:auto 1fr auto auto;column-gap:36px;row-gap:0;align-items:center;font-size:1.5rem}
+.ms-list>div{padding:18px 0;border-bottom:1px solid var(--rule)}
+.ms-list .d{width:22px;height:22px;transform:rotate(45deg);border-radius:3px;margin:0 6px}
+.ms-list .when{font-family:"IBM Plex Mono",ui-monospace,monospace;color:var(--ink-2);font-size:1.35rem}
+.ms-list .grp{font-weight:700;font-size:1.15rem}
+.ms-list .st{font-size:1.1rem;font-weight:700;color:var(--ink-2);text-align:right}
+.ms-list .nm{font-weight:600}
+.ms-list .past{color:var(--ink-3)}
+@media print{.present{display:none!important}}
 @media (prefers-reduced-motion:reduce){
   .btn:active,.seg button:active{transform:none}
   .tip,.toast{transition:opacity 120ms ease;transform:none}
@@ -134,12 +183,22 @@ svg.deps path{fill:none;stroke-width:1.25;opacity:.7}
     <button class="btn controls" id="depsBtn" aria-pressed="true">Dependencies</button>
     <button class="btn controls" id="undoBtn" disabled>Undo</button>
     <button class="btn controls" id="saveBtn" disabled>Save</button>
+    <button class="btn controls" id="presentBtn" title="Present (P)">Present</button>
     <button class="btn controls" data-export="png">PNG</button>
     <button class="btn controls" data-export="pdf">PDF</button>
     <button class="btn primary controls" data-export="pptx">Export PPTX</button>
   </div>
 </header>
 <div class="board" id="board"><div class="inner" id="inner"></div></div>
+</div>
+<div class="present" id="present" aria-hidden="true">
+  <div class="stage" id="stage" role="region" aria-roledescription="slide">
+    <div class="s-head"><div class="s-brand" id="sBrand"></div><div class="s-titles"><div class="s-kicker" id="sKicker"></div><h2 class="s-h" id="sH"></h2><p class="s-sub" id="sSub"></p></div></div>
+    <div class="s-body" id="sBody"></div>
+    <div class="s-foot"><span id="sFootL"></span><span class="dots" id="sDots"></span><span class="count" id="sCount"></span></div>
+  </div>
+  <button class="btn s-exit" id="sExit">Exit</button>
+  <div class="s-hint" id="sHint">Arrow keys or click to move | Esc to exit</div>
 </div>
 <div class="tip" id="tip"></div>
 <div class="toast" id="toast" role="status"></div>
@@ -202,7 +261,7 @@ let fitWidth = null; // set during print/export
 const collapsed = new Set();
 const history = [];
 let dirty = false;
-const LEFT = 250;
+let LEFT = 250;
 const viewWidth = () => (fitWidth ?? $("board").clientWidth - 26) - LEFT;
 const ppd = () => Math.max(ZOOM[zoom], viewWidth() / Math.max(1, days(R.start, R.end)));
 const px = d => days(R.start, d) * ppd();
@@ -221,7 +280,7 @@ function status(t){
 function scaleHTML(){
   let h="";
   const s=R.start, e=R.end;
-  const cell=(d,w,text,cls="")=>`<div class="tick ${cls}" style="left:${px(d)}px;width:${w}px">${text}</div>`;
+  const cell=(d,w,text,cls="")=> (W()-px(d) < Math.min(w,40) ? "" : `<div class="tick ${cls}" style="left:${px(d)}px;width:${w}px">${text}</div>`);
   const z = effectiveZoom();
   if (z==="day"){ for (let d=new Date(s); d<e; d=addDays(d,1)) h+=cell(d,ppd(),d.getDate(),days(d,TODAY)===0?"today-tick":""); }
   else if (z==="week"){ for (let d=new Date(s); d<e; d=addDays(d,7)) h+=cell(d,7*ppd(),fmt(d)); }
@@ -269,13 +328,18 @@ function renderHeader(){
   document.documentElement.style.setProperty("--col", tint(palette.today, 7));
 }
 
-function render(){
+// opts: {target, only:[phase idx], summary:bool, from, to (task slice), interactive}
+function render(opts={}){
+  const target = opts.target || $("inner");
+  const interactive = !opts.target;
   const w=W();
   let h=`<div class="scalehead" style="width:${LEFT+w+2}px"><div class="lab">Timeline</div><div class="scale" style="width:${w}px">${scaleHTML()}</div></div>`;
   plan.phases.forEach((p,pi)=>{
-    const col=phaseColor(p,pi), key=p.id||p.name, isC=collapsed.has(key), tasks=p.tasks||[];
+    if (opts.only && !opts.only.includes(pi)) return;
+    const col=phaseColor(p,pi), key=p.id||p.name, isC=opts.summary || (interactive && collapsed.has(key));
+    const tasks=(p.tasks||[]).slice(opts.from||0, opts.to ?? undefined);
     h+=`<section class="card ${isC?"collapsed":""}" style="width:${LEFT+w+2}px">`;
-    h+=`<div class="row ghead"><div class="lab" data-g="${esc(key)}" role="button" aria-expanded="${!isC}"><span class="caret">&#9662;</span><span class="nm" style="color:${col}">${esc(p.name)}</span><span class="pctg">${phasePct(p)}%</span></div><div class="lane" style="width:${w}px">${tasks.length?"":`<span class="empty-phase">No tasks yet</span>`}</div></div>`;
+    h+=`<div class="row ghead"><div class="lab" data-g="${esc(key)}" role="button" aria-expanded="${!isC}"><span class="caret">&#9662;</span><span class="nm" style="color:${col}">${esc(p.name)}</span><span class="pctg">${phasePct(p)}%</span></div><div class="lane" style="width:${w}px">${tasks.length?(opts.summary?summaryBar(p,col):""):`<span class="empty-phase">No tasks yet</span>`}</div></div>`;
     if (!isC) tasks.forEach(t=>{
       h+=`<div class="row task" data-row="${esc(t.id)}"><div class="lab"><span class="nm" title="${esc(t.name)}">${esc(t.name)}</span>${t.owner?`<span class="owner">${esc(t.owner)}</span>`:""}</div><div class="lane" style="width:${w}px"><div class="track" style="background:${col}"></div>`;
       if (t.milestone){
@@ -296,15 +360,27 @@ function render(){
   });
   h+=`<div class="cols">${colsHTML()}</div>`;
   if (TODAY>=R.start && TODAY<=R.end) h+=`<div class="today" style="left:${LEFT+px(TODAY)}px"></div>`;
-  h+=`<svg class="deps" id="deps"></svg>`;
-  $("inner").style.width=(LEFT+w+2)+"px";
-  $("inner").innerHTML=h;
-  $("inner").querySelectorAll("[data-g]").forEach(el=>el.onclick=()=>{ const g=el.dataset.g; collapsed.has(g)?collapsed.delete(g):collapsed.add(g); render(); });
-  drawDeps(); bindBars();
+  h+=`<svg class="deps"></svg>`;
+  target.style.width=(LEFT+w+2)+"px";
+  target.innerHTML=h;
+  if (interactive){
+    target.querySelectorAll("[data-g]").forEach(el=>el.onclick=()=>{ const g=el.dataset.g; collapsed.has(g)?collapsed.delete(g):collapsed.add(g); render(); });
+    bindBars();
+  }
+  drawDeps(target);
+}
+// One pill spanning the whole phase, plus its milestones, for the overview slide.
+function summaryBar(p,col){
+  const ts=(p.tasks||[]).filter(t=>t.start); if(!ts.length) return "";
+  const s=new Date(Math.min(...ts.map(t=>D(t.start)))), e=new Date(Math.max(...ts.map(t=>tEnd(t))));
+  const pct=phasePct(p), st = pct>=100?"Done": e<TODAY?"Overdue": s<=TODAY?"On-going":"Upcoming";
+  const x=px(s), bw=Math.max(px(addDays(e,1))-x,10);
+  let h=`<div class="track" style="background:${col}"></div><div class="bar sum ${bw>=120?"":"slim"}" style="left:${x}px;width:${bw}px;background:${tint(col,st==="Upcoming"?38:26)}"><span class="chip"><i></i>${bw>=70?`<span style="color:${col}">${esc(st)}</span>`:""}</span><span class="pct" style="color:${col}">${pct}%</span></div>`;
+  return h;
 }
 
-function drawDeps(){
-  const svg=$("deps"), inner=$("inner"); if(!svg) return;
+function drawDeps(inner=$("inner")){
+  const svg=inner.querySelector("svg.deps"); if(!svg) return;
   const ib=inner.getBoundingClientRect();
   svg.setAttribute("width", inner.scrollWidth); svg.setAttribute("height", inner.scrollHeight);
   if (!showDeps){ svg.innerHTML=""; return; }
@@ -532,11 +608,113 @@ document.querySelectorAll("[data-export]").forEach(b=>b.onclick=async()=>{
   finally{ b.disabled=false; }
 });
 
-addEventListener("resize", ()=>render());
+
+/* ---------- present mode ---------- */
+const ST={W:1920,H:1080,PADX:64,BODYH:1080-56-40-110-28-20-34};
+let slides=[], slideIdx=0, presenting=false;
+function buildSlides(){
+  const out=[{type:"overview"}];
+  const bodyH=ST.BODYH, fixed=48+10+12+52+14; // scale head + gaps + group head + card padding
+  plan.phases.forEach((p,pi)=>{
+    const n=(p.tasks||[]).length;
+    if (!n){ out.push({type:"phase",pi,from:0,to:0,part:1,parts:1,row:44}); return; }
+    const maxRows=Math.max(1,Math.floor((bodyH-fixed)/32));
+    const parts=Math.ceil(n/maxRows), per=Math.ceil(n/parts);
+    for (let k=0;k<parts;k++){
+      const from=k*per, to=Math.min(n,from+per), rows=to-from;
+      const row=Math.max(32,Math.min(60,Math.floor((bodyH-fixed)/rows)));
+      out.push({type:"phase",pi,from,to,part:k+1,parts,row});
+    }
+  });
+  if (allTasks().some(t=>t.milestone && t.start)) out.push({type:"milestones"});
+  return out;
+}
+function phaseRange(p){
+  const ts=(p.tasks||[]).filter(t=>t.start); if(!ts.length) return "";
+  const s=new Date(Math.min(...ts.map(t=>D(t.start)))), e=new Date(Math.max(...ts.map(t=>tEnd(t))));
+  return `${fmt(s)} to ${fmt(e)}`;
+}
+function renderSlide(){
+  const sl=slides[slideIdx], body=$("sBody"), stage=$("stage");
+  $("sBrand").innerHTML = plan.logo ? `<img src="${esc(plan.logo)}" alt="${esc(plan.org||"Logo")}">` : "";
+  $("sFootL").textContent = [plan.title, plan.org].filter(Boolean).join(" | ");
+  $("sDots").innerHTML = slides.map((_,i)=>`<i class="${i===slideIdx?"on":""}"></i>`).join("");
+  $("sCount").textContent = `${slideIdx+1} / ${slides.length}`;
+  $("sH").style.color="";
+  const saved={LEFT, fitWidth, zoom};
+  LEFT=380; fitWidth=ST.W-2*ST.PADX-4; zoom="quarter";
+  try{
+    if (sl.type==="overview"){
+      $("sKicker").textContent = plan.org || "Roadmap";
+      $("sH").textContent = plan.title || "Untitled plan";
+      const ms=allTasks().filter(t=>t.milestone).length, tasks=allTasks().filter(t=>!t.milestone).length;
+      $("sSub").textContent = plan.subtitle || `${plan.phases.length} groups | ${tasks} tasks${ms?` | ${ms} milestones`:""}`;
+      const n=plan.phases.length, gh=Math.max(40,Math.min(120,Math.floor((ST.BODYH-70)/n)-22));
+      stage.style.setProperty("--ghead", gh+"px"); stage.style.setProperty("--row", Math.min(60,gh-12)+"px");
+      body.innerHTML=`<div class="inner"></div>`;
+      render({target:body.firstChild, summary:true});
+    } else if (sl.type==="phase"){
+      const p=plan.phases[sl.pi], col=phaseColor(p,sl.pi), n=(p.tasks||[]).length;
+      $("sKicker").textContent = `${plan.title||""}${sl.parts>1?` | part ${sl.part} of ${sl.parts}`:""}`;
+      $("sH").textContent = p.name; $("sH").style.color=col;
+      $("sSub").textContent = [`${n} ${n===1?"item":"items"}`, phaseRange(p), `${phasePct(p)}% complete`].filter(Boolean).join(" | ");
+      stage.style.setProperty("--row", sl.row+"px"); stage.style.setProperty("--ghead", "52px");
+      body.innerHTML=`<div class="inner"></div>`;
+      render({target:body.firstChild, only:[sl.pi], from:sl.from, to:sl.to});
+    } else {
+      $("sKicker").textContent = plan.title || "";
+      $("sH").textContent = "Milestones";
+      const ms=[]; plan.phases.forEach((p,pi)=>(p.tasks||[]).forEach(t=>{ if(t.milestone&&t.start) ms.push({t,p,pi}); }));
+      ms.sort((a,b)=>D(a.t.start)-D(b.t.start));
+      const next=ms.find(m=>D(m.t.start)>=TODAY);
+      $("sSub").textContent = next ? `Next: ${next.t.name}, ${fmt(next.t.start)}` : "All milestones are behind us";
+      body.innerHTML=`<div class="ms-list">${ms.map(({t,p,pi})=>{ const col=phaseColor(p,pi), done=t.done||status(t)==="Done", past=D(t.start)<TODAY;
+        return `<div><div class="d" style="background:${done?col:"#fff"};box-shadow:inset 0 0 0 3px ${col}"></div></div><div class="nm ${past&&done?"past":""}">${esc(t.name)}</div><div class="grp" style="color:${col}">${esc(p.name)}</div><div class="when">${fmt(t.start)}</div>`; }).join("")}</div>`;
+    }
+  } finally { LEFT=saved.LEFT; fitWidth=saved.fitWidth; zoom=saved.zoom; }
+}
+function fitStage(){
+  const k=Math.min(innerWidth/ST.W, innerHeight/ST.H);
+  $("stage").style.transform=`translate(-50%,-50%) scale(${k})`;
+  $("stage").style.transformOrigin="center center";
+  $("stage").style.left="50%"; $("stage").style.top="50%";
+}
+function go(i){ slideIdx=Math.max(0,Math.min(slides.length-1,i)); renderSlide(); window.history.replaceState(null,"",`#slide-${slideIdx+1}`); }
+function startPresent(at=0){
+  slides=buildSlides(); presenting=true;
+  document.body.classList.add("presenting"); $("present").setAttribute("aria-hidden","false");
+  fitStage(); go(at);
+  const hint=$("sHint"); hint.classList.add("on"); clearTimeout(hint._h); hint._h=setTimeout(()=>hint.classList.remove("on"),3000);
+  if (document.documentElement.requestFullscreen && !document.fullscreenElement) document.documentElement.requestFullscreen().catch(()=>{});
+}
+function stopPresent(){
+  if (!presenting) return;
+  presenting=false; document.body.classList.remove("presenting"); $("present").setAttribute("aria-hidden","true");
+  window.history.replaceState(null,"",location.pathname+location.search);
+  if (document.fullscreenElement) document.exitFullscreen().catch(()=>{});
+  render();
+}
+$("presentBtn").onclick=()=>startPresent(0);
+$("sExit").onclick=e=>{ e.stopPropagation(); stopPresent(); };
+$("present").addEventListener("click", e=>{ if(e.target.closest(".s-exit")) return; e.clientX < innerWidth/3 ? go(slideIdx-1) : go(slideIdx+1); });
+document.addEventListener("fullscreenchange", ()=>{ if(!document.fullscreenElement && presenting) stopPresent(); });
+addEventListener("resize", ()=>{ if(presenting) fitStage(); });
+document.addEventListener("keydown", e=>{
+  if (e.target.closest && e.target.closest("input,textarea,[contenteditable]")) return;
+  if (!presenting){ if (e.key==="p" && !e.metaKey && !e.ctrlKey && !e.altKey) startPresent(0); return; }
+  const k=e.key;
+  if (["ArrowRight","PageDown"," ","Enter","ArrowDown"].includes(k)){ e.preventDefault(); go(slideIdx+1); }
+  else if (["ArrowLeft","PageUp","Backspace","ArrowUp"].includes(k)){ e.preventDefault(); go(slideIdx-1); }
+  else if (k==="Home") go(0); else if (k==="End") go(slides.length-1);
+  else if (k==="Escape") stopPresent();
+  else if (/^[1-9]$/.test(k)) go(Number(k)-1);
+});
+addEventListener("resize", ()=>{ if(!presenting) render(); });
 $("zoom").querySelectorAll("button").forEach(x=>x.setAttribute("aria-pressed", x.dataset.z===zoom));
 $("depsBtn").setAttribute("aria-pressed", showDeps);
 renderHeader(); render(); scrollToToday();
-window.__gantt = { plan, render, exportPPTX, exportPNG, serialize }; // used by tests
+{ const m=location.hash.match(/^#slide-(\d+)$/); if (m || new URLSearchParams(location.search).has("present")) startPresent(m?Number(m[1])-1:0); }
+window.__gantt = { plan, render, exportPPTX, exportPNG, serialize, startPresent, stopPresent, go, slides:()=>slides }; // used by tests
 </script>
 </body>
 </html>

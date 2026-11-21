@@ -161,6 +161,39 @@ await step("PNG export produces an image", async () => {
   const p = join(OUT, "checkout-v2.png"); await dl.saveAs(p);
   assert.equal(readFileSync(p).subarray(1, 4).toString(), "PNG");
 });
+await step("present mode: overview, one slide per group, milestones; keys and Esc", async () => {
+  await page.click("#presentBtn"); await page.waitForTimeout(150);
+  assert.ok(await page.evaluate(() => document.body.classList.contains("presenting")));
+  const kinds = await page.evaluate(() => window.__gantt.slides().map((s) => s.type));
+  assert.deepEqual(kinds, ["overview", "phase", "phase", "phase", "phase", "milestones"]);
+  assert.equal(await page.locator("#sH").textContent(), "Checkout v2");
+  assert.equal(await page.locator("#sBody .bar.sum").count(), 4);
+  await page.screenshot({ path: join(OUT, "present-1-overview.png") });
+  await page.keyboard.press("ArrowRight");
+  assert.equal(await page.locator("#sH").textContent(), "Discovery");
+  assert.equal(await page.locator("#sBody .bar").count(), 3);
+  await page.keyboard.press("End");
+  assert.equal(await page.locator("#sH").textContent(), "Milestones");
+  assert.equal(await page.locator(".ms-list .nm").count(), 2);
+  await page.screenshot({ path: join(OUT, "present-6-milestones.png") });
+  await page.keyboard.press("ArrowLeft");
+  assert.equal(await page.locator("#sH").textContent(), "Launch");
+  await page.keyboard.press("Escape"); await page.waitForTimeout(100);
+  assert.ok(!(await page.evaluate(() => document.body.classList.contains("presenting"))));
+  assert.equal(await page.locator("#inner .bar").count(), 12, "main chart is intact after presenting");
+});
+await step("present mode splits a long group across slides", async () => {
+  const big = JSON.parse(readFileSync(join(ROOT, "skill/gantt/examples/checkout-v2.json"), "utf8"));
+  big.phases[2].tasks = Array.from({ length: 40 }, (_, i) => ({ id: "b" + i, name: "Build task " + (i + 1), start: "2026-12-01", end: "2026-12-10", pct: 0 }));
+  writeFileSync(join(OUT, "big.json"), JSON.stringify(big)); node("build.mjs", join(OUT, "big.json"), join(OUT, "big.html"));
+  const p = await ctx.newPage(); await p.goto("file://" + join(OUT, "big.html") + "#slide-1"); await p.waitForTimeout(200);
+  const parts = await p.evaluate(() => window.__gantt.slides().filter((s) => s.pi === 2).map((s) => s.to - s.from));
+  assert.ok(parts.length >= 2, "expected the 40-task group on several slides");
+  assert.equal(parts.reduce((a, b) => a + b, 0), 40);
+  const fits = await p.evaluate(() => { window.__gantt.go(window.__gantt.slides().findIndex((s) => s.pi === 2)); const b = document.getElementById("sBody"); return b.scrollHeight <= b.clientHeight + 1; });
+  assert.ok(fits, "slide content overflows the slide");
+  await p.close();
+});
 await step("no page errors on the main chart", async () => { assert.deepEqual(errors, []); });
 
 await step("hostile names render as text", async () => {

@@ -214,6 +214,11 @@ Tell the user what the chart does, in one short list:
 
 - Drag a bar to move it, drag its edges to change dates. Undo with Ctrl or Cmd+Z.
 - Day, Week, Month and Fit zoom. Click a phase to collapse it.
+- **Present** (or press P) opens a full-screen 16:9 slide deck: an overview
+  with one bar per group, one slide per group (long groups split across
+  slides), and a milestones slide. Arrow keys, Space or a click move between
+  slides; Esc exits. Adding `#slide-3` to the file's address opens straight
+  on that slide.
 - **Save** downloads a copy of the file with their changes. Replace the old file
   with it.
 - **PNG** and **Export PPTX** download files. **PDF** opens the print dialog
